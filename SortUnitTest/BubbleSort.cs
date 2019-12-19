@@ -1,4 +1,4 @@
-namespace SortUnitTests
+namespace SortUnitTest
 {
     public static class BubbleSort
     {
