@@ -3,7 +3,7 @@ using Xunit;
 
 namespace SortUnitTest
 {
-    public class UnitTest1
+    public class SortUnitTest
     {
         [Fact]
         public void Test1()
