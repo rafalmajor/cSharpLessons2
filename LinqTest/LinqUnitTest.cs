@@ -26,8 +26,8 @@ namespace LinqTest
             var selectedUsers1 = this.randomUsers.Where(user => user.LastName == "Nowak");
 
             var selectedUsers2 = from user in this.randomUsers
-                where user.LastName == "Nowak"
-                select user;
+                                 where user.LastName == "Nowak"
+                                 select user;
 
             Assert.Equal(selectedUsers1.ToArray(), selectedUsers2.ToArray());
         }
@@ -37,7 +37,7 @@ namespace LinqTest
         {
             var groupUsers1 = this.randomUsers.GroupBy(user => user.LastName);
             var groupUsers2 = from user in this.randomUsers
-                group user by user.LastName;
+                              group user by user.LastName;
 
             Assert.Equal(groupUsers1.Select(u => u.Key).ToArray(), groupUsers2.Select(u => u.Key).ToArray());
         }
@@ -47,8 +47,8 @@ namespace LinqTest
         {
             var orderUser1 = this.randomUsers.OrderBy(user => user.LastName).ThenBy(user => user.FirstName);
             var orderUser2 = from user in this.randomUsers
-                orderby user.LastName, user.FirstName
-                select user;
+                             orderby user.LastName, user.FirstName
+                             select user;
 
             Assert.Equal(orderUser1.ToArray(), orderUser2.ToArray());
         }
@@ -58,7 +58,7 @@ namespace LinqTest
         {
             var select1 = this.randomUsers.Select(user => $"{user.FirstName} {user.LastName}, age{user.Age}");
             var select2 = from user in this.randomUsers
-                select $"{user.FirstName} {user.LastName}, age{user.Age}";
+                          select $"{user.FirstName} {user.LastName}, age{user.Age}";
 
             Assert.Equal(select1.ToArray(), select2.ToArray());
         }
@@ -68,7 +68,7 @@ namespace LinqTest
         {
             var select1 = this.randomUsers.Select(user => new Cat(user.LastName));
             var select2 = from user in this.randomUsers
-                select new Cat(user.LastName);
+                          select new Cat(user.LastName);
 
             Assert.Equal(select1.ToArray(), select2.ToArray());
         }
@@ -78,7 +78,7 @@ namespace LinqTest
         {
             var min1 = this.randomUsers.Min(user => user.Age);
             var min2 = (from user in this.randomUsers
-                select user.Age).Min();
+                        select user.Age).Min();
 
             Assert.Equal(min1, min2);
         }
@@ -88,7 +88,7 @@ namespace LinqTest
         {
             var max1 = this.randomUsers.Max(user => user.Age);
             var max2 = (from user in this.randomUsers
-                select user.Age).Max();
+                        select user.Age).Max();
 
             Assert.Equal(max1, max2);
         }
@@ -98,7 +98,7 @@ namespace LinqTest
         {
             var sum1 = this.randomUsers.Sum(user => user.Age);
             var sum2 = (from user in this.randomUsers
-                select user.Age).Sum();
+                        select user.Age).Sum();
 
             Assert.Equal(sum1, sum2);
         }
@@ -170,6 +170,12 @@ namespace LinqTest
                 this.OwnerLastName = ownerLastName;
             }
 
+            private Cat(string name, string ownerLastName)
+            {
+                this.Name = name;
+                this.OwnerLastName = ownerLastName;
+
+            }
             public string Name { get; }
 
             public IEnumerable<User> Users { get; }
@@ -179,6 +185,30 @@ namespace LinqTest
             public override string ToString()
             {
                 return $"Owner:{this.OwnerLastName}";
+            }
+
+            public bool Equals(Cat cat)
+            {
+                if (cat == null) return false;
+                return cat.Name == this.Name &&
+                cat.OwnerLastName == this.OwnerLastName;
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (obj == null) return false;
+                if (!(obj is Cat)) return false;
+                return this.Equals((Cat)obj);
+            }
+
+            public override int GetHashCode()
+            {
+                int value = 123456;
+                if (this.Name != null)
+                    value ^= this.Name.GetHashCode();
+                if (this.OwnerLastName != null)
+                    value ^= this.OwnerLastName.GetHashCode();
+                return value;
             }
         }
     }
